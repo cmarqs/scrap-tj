@@ -1,0 +1,29 @@
+{
+  "name": "scrap-tj",
+  "version": "0.0.1",
+  "description": "A node scrap for tj news",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/cmarqs/scrap-tj.git"
+  },
+  "keywords": [
+    "scrapping",
+    "tj",
+    "news",
+    "node",
+    "learning"
+  ],
+  "author": "CMarqs",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cmarqs/scrap-tj/issues"
+  },
+  "homepage": "https://github.com/cmarqs/scrap-tj#readme",
+  "dependencies": {
+    "puppeteer": "^2.1.1"
+  }
+}
