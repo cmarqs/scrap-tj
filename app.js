@@ -43,7 +43,6 @@ void (async () => {
 async function doScrap(sites) {
 	const browser = await puppeteer.launch();
 	try {
-
 		for (const site of sites) {
 			
 			const page = await browser.newPage();
@@ -89,5 +88,7 @@ async function doScrap(sites) {
 	} catch(error){
 		console.error(error);
 	}
-	await browser.close();
+	finally{
+		await browser.close();
+	}
 }
