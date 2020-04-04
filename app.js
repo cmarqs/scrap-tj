@@ -23,14 +23,26 @@ void (async () => {
 			image: { tagselector: 'img' },
 			snippet: { tagselector: 'p' }
 		}
-	}];
+	},
+	{
+		url: 'http://www.tjes.jus.br/category/ultimasnoticias/',
+		rowselector: 'div.container article',
+		cellselector: {
+			title: { tagselector: 'h2'}, 
+			href: { tagselector: 'a.article-titulo' },
+			dthrpub: { tagselector: 'div.post-date.text-uppercase' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'div.intro-text' }
+		}
+	},
+];
 
 	await doScrap(sites);
 })();
 
 async function doScrap(sites) {
+	const browser = await puppeteer.launch();
 	try {
-		const browser = await puppeteer.launch();
 
 		for (const site of sites) {
 			
@@ -74,11 +86,8 @@ async function doScrap(sites) {
 
 			console.log(JSON.stringify(news, null, 2));
 		}
-
-		await browser.close();
-
-		
 	} catch(error){
 		console.error(error);
 	}
+	await browser.close();
 }
