@@ -48,12 +48,16 @@ void (async () => {
 	}
 ];
 
-	await doScrap(sites);
+	const newsList = await doScrap(sites);
+	console.log(newsList)
 })();
 
 async function doScrap(sites) {
 	const browser = await puppeteer.launch();
+	const newsList = [];
+
 	try {
+
 		for (const site of sites) {
 			
 			const page = await browser.newPage();
@@ -93,13 +97,15 @@ async function doScrap(sites) {
 				}
 				return data;
 			}, site);
-
-			console.log(JSON.stringify(news, null, 2));
+			
+			newsList.push(news);
+			//console.log(JSON.stringify(news, null, 2));
 		}
+		return newsList;
+
 	} catch(error){
 		console.error(error);
-	}
-	finally{
+	} finally{
 		await browser.close();
 	}
 }
