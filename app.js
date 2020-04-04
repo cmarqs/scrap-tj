@@ -35,6 +35,17 @@ void (async () => {
 			snippet: { tagselector: 'div.intro-text' }
 		}
 	},
+	{
+		url: 'https://www.tjac.jus.br/category/noticias/',
+		rowselector: 'article.noticia-item.row',
+		cellselector: {
+			title: { tagselector: 'h1'}, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'time' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'em' }
+		}
+	}
 ];
 
 	await doScrap(sites);
