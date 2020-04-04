@@ -5,12 +5,24 @@ void (async () => {
 	[{
 		url: 'http://www.tjsp.jus.br/Noticias',
 		rowselector: 'article.noticia-item.row',
-		cellselector: {title: 'h1', href: 'a', dthrpub: 'time', image: 'img', snippet: 'p'}
+		cellselector: {
+			title: { tagselector: 'h1' }, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'time' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'p' }
+		}
 	},
 	{
 		url: 'http://www.tjrj.jus.br/web/guest/noticias',
 		rowselector: '.lista-noticias > li',
-		cellselector: {title: '.data > a', href: 'a', dthrpub: '.data > strong', image: 'img', snippet: 'p'}
+		cellselector: {
+			title: { tagselector: '.data > a', attr: 'title'}, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: '.data > strong' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'p' }
+		}
 	}];
 
 	await doScrap(sites);
@@ -48,14 +60,13 @@ async function doScrap(sites) {
 
 				const data = [];
 				const newsRows = document.querySelectorAll(site.rowselector);
-
 				for (const row of newsRows){
 					data.push({
-						title: getFromLine(row, site.cellselector.title, 'title'),
-						href: getFromLine(row, site.cellselector.href),
-						dthrpub: getFromLine(row, site.cellselector.dthrpub),
-						image: getFromLine(row, site.cellselector.image),
-						snippet: getFromLine(row, site.cellselector.snippet)
+						title: getFromLine(row, site.cellselector.title.tagselector, site.cellselector.title.attr),
+						href: getFromLine(row, site.cellselector.href.tagselector, site.cellselector.href.attr),
+						dthrpub: getFromLine(row, site.cellselector.dthrpub.tagselector, site.cellselector.dthrpub.attr),
+						image: getFromLine(row, site.cellselector.image.tagselector, site.cellselector.image.attr),
+						snippet: getFromLine(row, site.cellselector.snippet.tagselector, site.cellselector.snippet.attr)
 					});
 				}
 				return data;
