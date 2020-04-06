@@ -2,7 +2,8 @@ const puppeteer = require('puppeteer')
 
 void (async () => {
 	const sites = 
-	[/*{
+	[
+		{
 		url: 'http://www.tjsp.jus.br/Noticias',
 		rowselector: 'article.noticia-item.row',
 		cellselector: {
@@ -12,8 +13,8 @@ void (async () => {
 			image: { tagselector: 'img' },
 			snippet: { tagselector: 'p' }
 		},
-		nextbuttonpagination: '.btn_Numpag > i.fa.fa-chevron-xxx'
-	},*/
+		nextbuttonpagination: '.btn_Numpag > i.fa.fa-chevron-right'
+	},
 	{
 		url: 'http://www.tjrj.jus.br/web/guest/noticias',
 		rowselector: '.lista-noticias > li',
@@ -24,36 +25,37 @@ void (async () => {
 			image: { tagselector: 'img' },
 			snippet: { tagselector: 'p' }
 		},
-		nextbuttonpagination: 'ul.lfr-pagination-buttons.pager > li.last:not(.disabled)'
+		nextbuttonpagination: 'ul.lfr-pagination-buttons.pager > li:not(.disabled) a'
 	},
-	// {
-	// 	url: 'http://www.tjes.jus.br/category/ultimasnoticias/',
-	// 	rowselector: 'div.container article',
-	// 	cellselector: {
-	// 		title: { tagselector: 'h2'}, 
-	// 		href: { tagselector: 'a.article-titulo' },
-	// 		dthrpub: { tagselector: 'div.post-date.text-uppercase' },
-	// 		image: { tagselector: 'img' },
-	// 		snippet: { tagselector: 'div.intro-text' }
-	// 	},
-	// 	nextbuttonpagination: 'ul.pagination li a[title=Próximo]'
-	// },
-	// {
-	// 	url: 'https://www.tjac.jus.br/category/noticias/',
-	// 	rowselector: 'article.noticia-item.row',
-	// 	cellselector: {
-	// 		title: { tagselector: 'h1'}, 
-	// 		href: { tagselector: 'a' },
-	// 		dthrpub: { tagselector: 'time' },
-	// 		image: { tagselector: 'img' },
-	// 		snippet: { tagselector: 'em' }
-	// 	},
-	// 	nextbuttonpagination: 'div.navigation li:last-child:not(.active) a'
-	// }
+	{
+		url: 'http://www.tjes.jus.br/category/ultimasnoticias/',
+		rowselector: 'div.container article',
+		cellselector: {
+			title: { tagselector: 'h2'}, 
+			href: { tagselector: 'a.article-titulo' },
+			dthrpub: { tagselector: 'div.post-date.text-uppercase' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'div.intro-text' }
+		},
+		nextbuttonpagination: 'a.next.page-numbers'
+	},
+	{
+		url: 'https://www.tjac.jus.br/category/noticias/',
+		rowselector: 'article.noticia-item.row',
+		cellselector: {
+			title: { tagselector: 'h1'}, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'time' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'em' }
+		},
+		nextbuttonpagination: 'div.navigation li:last-child:not(.active) a'
+	}
 ];
 
 	const newsList = await doScrap(sites);
 	console.log(newsList)
+	console.log(`Total páginas extraídas: ${newsList.length}`);
 })();
 
 async function doScrap(sites) {
@@ -126,6 +128,7 @@ async function doScrap(sites) {
 				}
 				catch(error){
 					console.log(`Erro ao paginar (${i}) ${site.url}: ${error}`);
+					paginate = false;
 				}
 			}while (paginate);
 		}
