@@ -2,7 +2,8 @@ const puppeteer = require('puppeteer')
 
 void (async () => {
 	const sites = 
-	[{
+	[
+		{
 		url: 'http://www.tjsp.jus.br/Noticias',
 		rowselector: 'article.noticia-item.row',
 		cellselector: {
@@ -11,7 +12,8 @@ void (async () => {
 			dthrpub: { tagselector: 'time' },
 			image: { tagselector: 'img' },
 			snippet: { tagselector: 'p' }
-		}
+		},
+		nextbuttonpagination: '.btn_Numpag > i.fa.fa-chevron-right'
 	},
 	{
 		url: 'http://www.tjrj.jus.br/web/guest/noticias',
@@ -22,7 +24,8 @@ void (async () => {
 			dthrpub: { tagselector: '.data > strong' },
 			image: { tagselector: 'img' },
 			snippet: { tagselector: 'p' }
-		}
+		},
+		nextbuttonpagination: 'ul.lfr-pagination-buttons.pager > li:not(.disabled) a'
 	},
 	{
 		url: 'http://www.tjes.jus.br/category/ultimasnoticias/',
@@ -33,7 +36,8 @@ void (async () => {
 			dthrpub: { tagselector: 'div.post-date.text-uppercase' },
 			image: { tagselector: 'img' },
 			snippet: { tagselector: 'div.intro-text' }
-		}
+		},
+		nextbuttonpagination: 'a.next.page-numbers'
 	},
 	{
 		url: 'https://www.tjac.jus.br/category/noticias/',
@@ -44,17 +48,60 @@ void (async () => {
 			dthrpub: { tagselector: 'time' },
 			image: { tagselector: 'img' },
 			snippet: { tagselector: 'em' }
-		}
+		},
+		nextbuttonpagination: 'div.navigation li:last-child:not(.active) a'
 	}
 ];
 
 	const newsList = await doScrap(sites);
 	console.log(newsList)
+	console.log(`Total páginas extraídas: ${newsList.length}`);
 })();
 
 async function doScrap(sites) {
-	const browser = await puppeteer.launch();
+	const browser = await puppeteer.launch({headless: false, slowMo: 250 });
 	const newsList = [];
+
+	async function getNewsFromEvaluatePage(page, site) {
+		return await page.evaluate((site) => {
+	
+			const getFromLine = function(row, cell, attr) {
+				el = row.querySelector(cell);
+				if (el){
+					if (!attr){
+						switch (el.nodeName) {
+							case "IMG":
+								return el.src;
+							case "A":
+								return el.href;
+							default:
+								return el.innerText;
+						}
+					}
+					else
+						return el.getAttribute(attr);
+				}
+			}
+	
+			const data = [];
+			const newsRows = document.querySelectorAll(site.rowselector);
+			for (const row of newsRows){
+				data.push({
+					title: getFromLine(row, site.cellselector.title.tagselector, site.cellselector.title.attr),
+					href: getFromLine(row, site.cellselector.href.tagselector, site.cellselector.href.attr),
+					dthrpub: getFromLine(row, site.cellselector.dthrpub.tagselector, site.cellselector.dthrpub.attr),
+					image: getFromLine(row, site.cellselector.image.tagselector, site.cellselector.image.attr),
+					snippet: getFromLine(row, site.cellselector.snippet.tagselector, site.cellselector.snippet.attr)
+				});
+			}
+
+			if (document.querySelector(site.nextbuttonpagination))
+				document.querySelector(site.nextbuttonpagination).click
+
+			return data;
+			
+		}, site);
+	}
 
 	try {
 
@@ -63,43 +110,27 @@ async function doScrap(sites) {
 			const page = await browser.newPage();
 			await page.goto(site.url)
 
-			//get news
-			const news = await page.evaluate((site) => {
+			let i = 1;
+			let paginate = false;
+			do {
+				console.log(`Pagina: ${i}`);
 
-				const getFromLine = function(row, cell, attr) {
-					el = row.querySelector(cell);
-					if (el){
-						if (!attr){
-							switch (el.nodeName) {
-								case "IMG":
-									return el.src;
-								case "A":
-									return el.href;
-								default:
-									return el.innerText;
-							}
-						}
-						else
-							return el.getAttribute(attr);
-					}
-				}
+				//get news
+				newsList.push(await getNewsFromEvaluatePage(page, site));
 
-				const data = [];
-				const newsRows = document.querySelectorAll(site.rowselector);
-				for (const row of newsRows){
-					data.push({
-						title: getFromLine(row, site.cellselector.title.tagselector, site.cellselector.title.attr),
-						href: getFromLine(row, site.cellselector.href.tagselector, site.cellselector.href.attr),
-						dthrpub: getFromLine(row, site.cellselector.dthrpub.tagselector, site.cellselector.dthrpub.attr),
-						image: getFromLine(row, site.cellselector.image.tagselector, site.cellselector.image.attr),
-						snippet: getFromLine(row, site.cellselector.snippet.tagselector, site.cellselector.snippet.attr)
-					});
+				// it continues to get news paginating (if exists)
+				try{
+					await page.click(site.nextbuttonpagination);
+
+					//manually set number of pages		
+					i += 1;
+					paginate = (i <= 3) ? true : false;
 				}
-				return data;
-			}, site);
-			
-			newsList.push(news);
-			//console.log(JSON.stringify(news, null, 2));
+				catch(error){
+					console.log(`Erro ao paginar (${i}) ${site.url}: ${error}`);
+					paginate = false;
+				}
+			}while (paginate);
 		}
 		return newsList;
 
@@ -109,3 +140,4 @@ async function doScrap(sites) {
 		await browser.close();
 	}
 }
+
