@@ -16,3 +16,7 @@ https://www.vojtechruzicka.com/javascript-async-await/
 
 ### JS sintax related
 - https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/Operador_Condicional
+
+### Pagination with Puppeteer
+- https://stackoverflow.com/questions/52325114/overcoming-pagination-when-using-puppeteer-library-for-web-scraping
+- https://www.darrenlester.com/blog/basic-web-scraping-with-puppeteer
