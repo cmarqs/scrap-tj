@@ -3,6 +3,19 @@ const puppeteer = require('puppeteer')
 void (async () => {
 	const sites = 
 	[
+		/*
+		{
+			url: '',
+			rowselector: '',
+			cellselector: {
+				title: { tagselector: 'h1' }, 
+				href: { tagselector: 'a' },
+				dthrpub: { tagselector: 'time' },
+				image: { tagselector: 'img' },
+				snippet: { tagselector: 'p' }
+			},
+			nextbuttonpagination: 'a[title="Próximo"]'
+		},
 		{
 		url: 'http://www.tjsp.jus.br/Noticias',
 		rowselector: 'article.noticia-item.row',
@@ -22,10 +35,96 @@ void (async () => {
 			title: { tagselector: '.data > a', attr: 'title'}, 
 			href: { tagselector: 'a' },
 			dthrpub: { tagselector: '.data > strong' },
-			image: { tagselector: 'img' },
+			image: { tagselector: 'x' },
 			snippet: { tagselector: 'p' }
 		},
 		nextbuttonpagination: 'ul.lfr-pagination-buttons.pager > li:not(.disabled) a'
+	},
+
+
+	{
+		url: 'https://www.tjac.jus.br/category/noticias/',
+		rowselector: 'article.noticia-item.row',
+		cellselector: {
+			title: { tagselector: 'h1'}, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'time' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'em' }
+		},
+		nextbuttonpagination: 'div.navigation li:last-child:not(.active) a'
+	},
+	{
+		url: 'http://www.tjal.jus.br/comunicacao2.php?pag=listaNoticias',
+		rowselector: 'div.col-sm-12[style="margin-bottom:40px;"]',
+		cellselector: {
+			title: { tagselector: 'font.manchete03' }, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'font' },
+			image: { tagselector: '.thumbnail > img' },
+			snippet: { tagselector: 'font:last-child' }
+		},
+		nextbuttonpagination: 'a i.glyphicon-chevron-right'
+	},
+	{
+		url: 'https://www.tjam.jus.br/index.php/menu/sala-de-imprensa',
+		rowselector: 'tbody > tr',
+		cellselector: {
+			title: { tagselector: '.list-title' }, 
+			href: { tagselector: '.list-title a' },
+			dthrpub: { tagselector: '.list-date.small' },
+			image: { tagselector: 'x' },
+			snippet: { tagselector: 'x' }
+		},
+		nextbuttonpagination: 'ul.pagination li a[title=Próximo]'
+	},
+	{
+		url: 'https://www.tjap.jus.br/portal/publicacoes/noticias.html',
+		rowselector: 'div.blog > div',
+		cellselector: {
+			title: { tagselector: '.page-header' }, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'time' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'p' }
+		},
+		nextbuttonpagination: 'a[title="Próximo"]'
+	},
+	{
+		url: 'http://www5.tjba.jus.br/portal/categoria/noticia/',
+		rowselector: 'article.noticia',
+		cellselector: {
+			title: { tagselector: 'h1' }, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'time' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'p:nth-last-child(3) > a'}
+		},
+		nextbuttonpagination: 'a.nextpostslink'
+	},
+	{
+		url: 'https://www.tjce.jus.br/noticias/',
+		rowselector: 'article',
+		cellselector: {
+			title: { tagselector: 'h3' }, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'li:last-child' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'div.grid-itens' }
+		},
+		nextbuttonpagination: 'a.next.page-numbers'
+	},
+	{
+		url: 'https://www.tjdft.jus.br/institucional/imprensa/noticias',
+		rowselector: 'article.entry',
+		cellselector: {
+			title: { tagselector: 'span' }, 
+			href: { tagselector: 'a' },
+			dthrpub: { tagselector: 'time' },
+			image: { tagselector: 'img' },
+			snippet: { tagselector: 'p' }
+		},
+		nextbuttonpagination: 'span.label + span.arrow'
 	},
 	{
 		url: 'http://www.tjes.jus.br/category/ultimasnoticias/',
@@ -39,18 +138,8 @@ void (async () => {
 		},
 		nextbuttonpagination: 'a.next.page-numbers'
 	},
-	{
-		url: 'https://www.tjac.jus.br/category/noticias/',
-		rowselector: 'article.noticia-item.row',
-		cellselector: {
-			title: { tagselector: 'h1'}, 
-			href: { tagselector: 'a' },
-			dthrpub: { tagselector: 'time' },
-			image: { tagselector: 'img' },
-			snippet: { tagselector: 'em' }
-		},
-		nextbuttonpagination: 'div.navigation li:last-child:not(.active) a'
-	}
+	*/
+
 ];
 
 	const newsList = await doScrap(sites);
@@ -116,10 +205,12 @@ async function doScrap(sites) {
 				console.log(`Pagina: ${i}`);
 
 				//get news
+				//await page.waitForSelector(page.rowselector , { timeout: 1000  });
 				newsList.push(await getNewsFromEvaluatePage(page, site));
 
 				// it continues to get news paginating (if exists)
 				try{
+					await page.waitForSelector(site.nextbuttonpagination , { timeout: 1000  });
 					await page.click(site.nextbuttonpagination);
 
 					//manually set number of pages		
