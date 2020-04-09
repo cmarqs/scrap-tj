@@ -136,7 +136,6 @@ void (async () => {
 			},
 			nextbuttonpagination: 'a.next.page-numbers'
 		},
-		*/
 		{
 			url: 'https://www.tjgo.jus.br/index.php/institucional/centro-de-comunicacao-social',
 			rowselector: 'div.item',
@@ -148,6 +147,19 @@ void (async () => {
 				snippet: { tagselector: 'p' }
 			},
 			nextbuttonpagination: 'i.fas.fa-angle-right'
+		},
+		*/
+		{
+			url: 'http://www.tjma.jus.br/tj/publicacoes/sessao/19',
+			rowselector: '#list-news > li',
+			cellselector: {
+				title: { tagselector: 'h2' }, 
+				href: { tagselector: 'a' },
+				dthrpub: { tagselector: 'span' },
+				image: { tagselector: 'img' },
+				snippet: { tagselector: 'p:not(#local)' }
+			},
+			nextbuttonpagination: '.pagination li:last-child a:not(.selected)'
 		},
 		
 ];
