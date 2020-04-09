@@ -126,6 +126,8 @@ void (async () => {
 		},
 		nextbuttonpagination: 'span.label + span.arrow'
 	},
+	*/
+
 	{
 		url: 'http://www.tjes.jus.br/category/ultimasnoticias/',
 		rowselector: 'div.container article',
@@ -138,7 +140,6 @@ void (async () => {
 		},
 		nextbuttonpagination: 'a.next.page-numbers'
 	},
-	*/
 
 ];
 
@@ -192,6 +193,21 @@ async function doScrap(sites) {
 		}, site);
 	}
 
+	async function paginateNewsFromPage(page, site, i, paginate) {
+		try{
+			await page.waitForSelector(site.nextbuttonpagination , { timeout: 1000  });
+			await page.click(site.nextbuttonpagination);
+
+			//manually set number of pages		
+			i += 1;
+			paginate = (i <= 3) ? true : false;
+		}
+		catch(error){
+			console.log(`Erro ao paginar (${i}) ${site.url}: ${error}`);
+			paginate = false;
+		}
+	}
+
 	try {
 
 		for (const site of sites) {
@@ -209,18 +225,7 @@ async function doScrap(sites) {
 				newsList.push(await getNewsFromEvaluatePage(page, site));
 
 				// it continues to get news paginating (if exists)
-				try{
-					await page.waitForSelector(site.nextbuttonpagination , { timeout: 1000  });
-					await page.click(site.nextbuttonpagination);
-
-					//manually set number of pages		
-					i += 1;
-					paginate = (i <= 3) ? true : false;
-				}
-				catch(error){
-					console.log(`Erro ao paginar (${i}) ${site.url}: ${error}`);
-					paginate = false;
-				}
+				await paginateNewsFromPage(page, site, i, paginate);
 			}while (paginate);
 		}
 		return newsList;
