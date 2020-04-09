@@ -3,6 +3,7 @@ const puppeteer = require('puppeteer')
 void (async () => {
 	const sites = 
 	[
+		/*
 		{
 			url: '',
 			rowselector: '',
@@ -135,7 +136,20 @@ void (async () => {
 			},
 			nextbuttonpagination: 'a.next.page-numbers'
 		},
-
+		*/
+		{
+			url: 'https://www.tjgo.jus.br/index.php/institucional/centro-de-comunicacao-social',
+			rowselector: 'div.item',
+			cellselector: {
+				title: { tagselector: 'h2' }, 
+				href: { tagselector: 'a' },
+				dthrpub: { tagselector: 'time', attr: 'datetime' },
+				image: { tagselector: 'img' },
+				snippet: { tagselector: 'p' }
+			},
+			nextbuttonpagination: 'i.fas.fa-angle-right'
+		},
+		
 ];
 
 	const newsList = await doScrap(sites);
@@ -144,7 +158,6 @@ void (async () => {
 })();
 
 async function doScrap(sites) {
-	const browser = await puppeteer.launch({headless: false, slowMo: 250 });
 
 	async function getNewsFromEvaluatePage(page, site) {
 		return await page.evaluate((site) => {
@@ -215,6 +228,8 @@ async function doScrap(sites) {
 		);
 		return newsList;
 	}
+
+	const browser = await puppeteer.launch({headless: false, slowMo: 250 });
 
 	try {
 		return await scrapParallelFromSiteList();
