@@ -15,16 +15,20 @@
 
 const sites = [
     {
-		url: 'http://www.tjsp.jus.br/Noticias',
-		rowselector: 'article.noticia-item.row',
-		cellselector: {
-			title: { tagselector: 'h1' }, 
-			href: { tagselector: 'a' },
-			dthrpub: { tagselector: 'time' },
-			image: { tagselector: 'img' },
-			snippet: { tagselector: 'p' }
-		},
-		nextbuttonpagination: '.btn_Numpag > i.fa.fa-chevron-right'
+			url: 'http://www.tjsp.jus.br/Noticias',
+			rowselector: 'article.noticia-item.row',
+			cellselector: {
+				title: { tagselector: 'h1' }, 
+				href: { tagselector: 'a' },
+				dthrpub: { tagselector: 'time' },
+				image: { tagselector: 'img' },
+				snippet: { tagselector: 'p' }
+			},
+			limit: {
+				key: 'dthrpub',
+				value: '02/04/2020'
+			},
+			nextbuttonpagination: '.btn_Numpag > i.fa.fa-chevron-right',
 		},
 		{
 			url: 'http://www.tjrj.jus.br/web/guest/noticias',
@@ -36,8 +40,13 @@ const sites = [
 				image: { tagselector: 'x' },
 				snippet: { tagselector: 'p' }
 			},
+			limit: {
+				key: 'title',
+				value: 'Ato 09/2020 consolida termos de ato anterior'
+			},
 			nextbuttonpagination: 'ul.lfr-pagination-buttons.pager > li:not(.disabled) a'
 		},
+		/*
 		{
 			url: 'https://www.tjac.jus.br/category/noticias/',
 			rowselector: 'article.noticia-item.row',
@@ -158,6 +167,7 @@ const sites = [
 			},
 			nextbuttonpagination: '.pagination li:last-child a:not(.selected)'
 		},
+		*/
 ]
 
 exports.sites = sites;

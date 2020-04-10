@@ -48,26 +48,52 @@ async function doScrap(sites) {
 			
 		}, site);
 	}
-
-	async function paginateNewsFromPage(page, site) {
-		try{
-			await page.waitForSelector(site.nextbuttonpagination , { timeout: 1000  });
-			await page.click(site.nextbuttonpagination);
-		}
-		catch(error){
-			console.log(`Erro de paginação: ${error} \n`);
-		}
-	}
-
+	
 	async function scrapParallelFromSiteList() {
+
+		async function stopPagination(datacollected, site, page) {
+			let doStop = false;
+			Array(datacollected).some((data) => {
+				//console.log(`Key do site ${site.url} é (${site.limit.key}) ${site.limit.value}`);
+				data.some((d, i) => { 
+					doStop = (d[site.limit.key] == site.limit.value); 
+					//console.log(`i[${i}] = ${d[site.limit.key]} (stoped: ${doStop})`);
+					return doStop;
+				}); 
+				return doStop;
+			});
+
+			if (!doStop){
+				try{
+					await page.waitForSelector(site.nextbuttonpagination , { timeout: 10000  });
+					await page.click(site.nextbuttonpagination);
+					doStop = false;
+				}
+				catch(error){
+					console.log(`Erro ao paginar site ${site.url}: ${error}`);
+					doStop = true;
+				}
+			}
+			console.log(`Saiu como? ${doStop}`)
+			return doStop;
+		}
+
 		const newsList = [];
 		await Promise.all(
 			sites.map(
 				async (site) => {
 					const page = await browser.newPage();
+
 					try{
 						await page.goto(site.url)
-						newsList.push(await getNewsFromEvaluatePage(page, site));
+
+						let news = [];
+						let stopPaginate = false;
+						do {
+							news = await getNewsFromEvaluatePage(page, site);
+							newsList.push(news);
+							stopPaginate = await stopPagination(news, site, page);
+						} while (!stopPaginate)
 					}
 					catch(error){
 						console.log(`Erro ao raspar ${site.url}: ${error} \n`);
@@ -75,6 +101,7 @@ async function doScrap(sites) {
 					finally{
 						await page.close();
 					}
+					
 				}
 			)
 		);
