@@ -44,9 +44,6 @@ async function doScrap(sites) {
 				});
 			}
 
-			if (document.querySelector(site.nextbuttonpagination))
-				document.querySelector(site.nextbuttonpagination).click
-
 			return data;
 			
 		}, site);
@@ -75,6 +72,9 @@ async function doScrap(sites) {
 					catch(error){
 						console.log(`Erro ao raspar ${site.url}: ${error} \n`);
 					}
+					finally{
+						await page.close();
+					}
 				}
 			)
 		);
@@ -91,4 +91,5 @@ async function doScrap(sites) {
 		await browser.close();
 	}
 }
+
 
