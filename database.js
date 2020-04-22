@@ -1,12 +1,20 @@
 const config = require('./config');
 const mongodb = require('mongodb');
 
-const client = new mongodb.MongoClient(config.dbConfig.dbUrl, { useNewUrlParser: true, useUnifiedTopology: true, poolSize: 10 });
+let connection = null;
 
-const db = client.connect(function (err, db) {
-	if (err) { console.log(err); }
-	else {
-		console.log('Connected\n');
-		return db.db('sample_airbnb');
-	}
+module.exports.connect = (dbName) => new Promise((resolve, reject) => {
+	mongodb.MongoClient.connect(config.dbConfig.dbUrl, config.dbConfig.dbOptions, function (err, db) {
+		if (err) { reject(err); return; };
+		resolve(db);
+		connection = db.db(dbName);
+	});
 });
+
+module.exports.get = (collectionName) => {
+	if (!connection) {
+		throw new Error('You should connect to the database first calling "connect" first.');
+	}
+
+	return connection.collection(collectionName);
+}
