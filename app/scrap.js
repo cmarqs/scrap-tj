@@ -82,7 +82,7 @@ async function doScrap(sites) {
                         let stopPaginate = false;
                         do {
                             news = await getNewsFromEvaluatePage(page, site);
-                            newsList.push(news);
+                            newsList.push.apply(newsList, news);
                             stopPaginate = await stopPagination(news, site, page);
                         } while (!stopPaginate)
                     }
