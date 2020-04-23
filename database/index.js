@@ -8,6 +8,7 @@ module.exports.connect = (dbName) => new Promise((resolve, reject) => {
 		if (err) { reject(err); return; };
 		resolve(db);
 		connection = db.db(dbName);
+		console.log('DataBase connected')
 	});
 });
 

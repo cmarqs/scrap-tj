@@ -24,3 +24,4 @@ https://www.vojtechruzicka.com/javascript-async-await/
 ### MongoDb Integration
 https://www.w3schools.com/nodejs/nodejs_mongodb.asp
 https://www.compose.com/articles/connection-pooling-with-mongodb/
+It helped me a lot! --> https://stackoverflow.com/questions/18822482/get-mongodb-data-to-nodejs-array
