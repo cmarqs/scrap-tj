@@ -8,6 +8,8 @@ void (async () => {
 	// 	console.log(`Resposta: ${JSON.stringify(sites)} \n`);
 	// });
 	scrap.runScraper();
+
+	db.close();
 })();
 
 
