@@ -12,11 +12,6 @@ module.exports.connect = (dbName) => new Promise((resolve, reject) => {
 	});
 });
 
-module.exports.close = () => {
-	if (connection)
-		connection.close();
-}
-
 module.exports.get = (collectionName) => {
 	if (!connection) {
 		throw new Error('You should connect to the database first calling "connect" first.');

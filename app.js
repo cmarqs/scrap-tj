@@ -7,7 +7,7 @@ void (async () => {
 	// sitecontroller.findSite({ url: 'http://www.tjsp.jus.br/Noticias' }, function (sites) {
 	// 	console.log(`Resposta: ${JSON.stringify(sites)} \n`);
 	// });
-	scrap.runScraper();
+	//scrap.runScraper();
 
 	db.close();
 })();
