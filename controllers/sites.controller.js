@@ -11,8 +11,8 @@ const insertSite = (site) => {
     });
 }
 
-const findSite = (objKeyValue, result) => {
-    db.get('sites').find(objKeyValue).toArray((err, docs) => {
+const findSite = (filter, result) => {
+    db.get('sites').find(filter).toArray((err, docs) => {
         if (err) {
             console.log(err);
             return;
