@@ -27,12 +27,13 @@ async function doScrap(sites) {
             const newsRows = document.querySelectorAll(site.rowselector);
             for (const row of newsRows) {
                 data.push({
+                    site_id: site._id,
+                    dthrscrap: Date.now(),
                     title: getFromLine(row, site.cellselector.title.tagselector, site.cellselector.title.attr),
                     href: getFromLine(row, site.cellselector.href.tagselector, site.cellselector.href.attr),
                     dthrpub: getFromLine(row, site.cellselector.dthrpub.tagselector, site.cellselector.dthrpub.attr),
                     image: getFromLine(row, site.cellselector.image.tagselector, site.cellselector.image.attr),
                     snippet: getFromLine(row, site.cellselector.snippet.tagselector, site.cellselector.snippet.attr),
-                    dthrscrap: Date.now()
                 });
             }
 
@@ -88,6 +89,7 @@ async function doScrap(sites) {
                         do {
                             news = await getNewsFromEvaluatePage(page, site);
                             //newsList.push.apply(newsList, news);
+                            newsList.push(news);
                             stopPaginate = await stopPagination(news, site, page);
 
                         } while (!stopPaginate)
