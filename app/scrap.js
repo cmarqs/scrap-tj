@@ -53,7 +53,8 @@ async function doScrap(sites) {
             Array(datacollected).some((data) => {
                 //console.log(`Key do site ${site.url} é (${site.limit.key}) ${site.limit.value}`);
                 data.some((d, i) => {
-                    doStop = (d[site.limit.key] == site.limit.value);
+                    if (d[site.limit])
+                        doStop = (d[site.limit.key] == site.limit.value);
                     //console.log(`i[${i}] = ${d[site.limit.key]} (stoped: ${doStop})`);
                     return doStop;
                 });
