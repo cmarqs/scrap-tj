@@ -43,6 +43,10 @@ async function doScrap(sites) {
 
     async function scrapParallelFromSiteList() {
 
+        /*
+            Verifica se, na lista de notícias raspadas existe a chave:valor (limit).
+            Se tiver, não precisa paginar. Caso contrário, libera a paginação até enconcontrar o limit.
+        */
         async function stopPagination(datacollected, site, page) {
             let doStop = false;
             Array(datacollected).some((data) => {
@@ -83,8 +87,9 @@ async function doScrap(sites) {
                         let stopPaginate = false;
                         do {
                             news = await getNewsFromEvaluatePage(page, site);
-                            newsList.push.apply(newsList, news);
+                            //newsList.push.apply(newsList, news);
                             stopPaginate = await stopPagination(news, site, page);
+
                         } while (!stopPaginate)
                     }
                     catch (error) {
