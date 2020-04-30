@@ -24,6 +24,8 @@
   },
   "homepage": "https://github.com/cmarqs/scrap-tj#readme",
   "dependencies": {
+    "dotenv": "^8.2.0",
+    "mongodb": "^3.5.6",
     "puppeteer": "^2.1.1"
   }
 }

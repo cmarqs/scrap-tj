@@ -20,3 +20,8 @@ https://www.vojtechruzicka.com/javascript-async-await/
 ### Pagination with Puppeteer
 - https://stackoverflow.com/questions/52325114/overcoming-pagination-when-using-puppeteer-library-for-web-scraping
 - https://www.darrenlester.com/blog/basic-web-scraping-with-puppeteer
+
+### MongoDb Integration
+https://www.w3schools.com/nodejs/nodejs_mongodb.asp
+https://www.compose.com/articles/connection-pooling-with-mongodb/
+It helped me a lot! --> https://stackoverflow.com/questions/18822482/get-mongodb-data-to-nodejs-array
