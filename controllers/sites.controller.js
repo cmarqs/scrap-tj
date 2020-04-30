@@ -22,5 +22,16 @@ const findSite = (filter, result) => {
     });
 }
 
+const updateLimit = (filter, modifiedSite, result) => {
+    db.get('sites').update(filter, modifiedSite, { "upsert": false })
+        .then(result => {
+            const { matchedCount, modifiedCount } = result;
+            console.log(`Successfully matched ${matchedCount} and modified ${modifiedCount} items.`)
+            return result
+        })
+        .catch(err => console.error(`Failed to update items: ${err}`))
+}
+
 exports.insertSite = insertSite;
 exports.findSite = findSite;
+exports.updateLimit = updateLimit;
