@@ -31,7 +31,8 @@ async function doScrap(sites) {
                     href: getFromLine(row, site.cellselector.href.tagselector, site.cellselector.href.attr),
                     dthrpub: getFromLine(row, site.cellselector.dthrpub.tagselector, site.cellselector.dthrpub.attr),
                     image: getFromLine(row, site.cellselector.image.tagselector, site.cellselector.image.attr),
-                    snippet: getFromLine(row, site.cellselector.snippet.tagselector, site.cellselector.snippet.attr)
+                    snippet: getFromLine(row, site.cellselector.snippet.tagselector, site.cellselector.snippet.attr),
+                    dthrscrap: Date.now()
                 });
             }
 
