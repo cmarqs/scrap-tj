@@ -20,3 +20,6 @@ const listNews = (filter, result) => {
         result(docs);
     })
 }
+
+exports.insertNews = insertNews;
+exports.listNews = listNews;

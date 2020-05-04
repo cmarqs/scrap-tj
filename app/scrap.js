@@ -27,12 +27,13 @@ async function doScrap(sites) {
             const newsRows = document.querySelectorAll(site.rowselector);
             for (const row of newsRows) {
                 data.push({
+                    site_id: site._id,
+                    dthrscrap: Date.now(),
                     title: getFromLine(row, site.cellselector.title.tagselector, site.cellselector.title.attr),
                     href: getFromLine(row, site.cellselector.href.tagselector, site.cellselector.href.attr),
                     dthrpub: getFromLine(row, site.cellselector.dthrpub.tagselector, site.cellselector.dthrpub.attr),
                     image: getFromLine(row, site.cellselector.image.tagselector, site.cellselector.image.attr),
                     snippet: getFromLine(row, site.cellselector.snippet.tagselector, site.cellselector.snippet.attr),
-                    dthrscrap: Date.now()
                 });
             }
 
@@ -43,13 +44,18 @@ async function doScrap(sites) {
 
     async function scrapParallelFromSiteList() {
 
+        /*
+            Verifica se, na lista de notícias raspadas existe a chave:valor (limit).
+            Se tiver, não precisa paginar. Caso contrário, libera a paginação até enconcontrar o limit.
+        */
         async function stopPagination(datacollected, site, page) {
             let doStop = false;
             Array(datacollected).some((data) => {
                 //console.log(`Key do site ${site.url} é (${site.limit.key}) ${site.limit.value}`);
                 data.some((d, i) => {
-                    doStop = (d[site.limit.key] == site.limit.value);
-                    //console.log(`i[${i}] = ${d[site.limit.key]} (stoped: ${doStop})`);
+                    if (site.limit)
+                        doStop = (d[site.limit.key] == site.limit.value);
+                    //console.log(`Limit existe? ${(site.limit)} - i[${i}] = ${d[site.limit.key]} (stoped: ${doStop})`);
                     return doStop;
                 });
                 return doStop;
@@ -59,7 +65,6 @@ async function doScrap(sites) {
                 try {
                     await page.waitForSelector(site.nextbuttonpagination, { timeout: 10000 });
                     await page.click(site.nextbuttonpagination);
-                    doStop = false;
                 }
                 catch (error) {
                     console.log(`Erro ao paginar site ${site.url}: ${error}`);
@@ -83,8 +88,10 @@ async function doScrap(sites) {
                         let stopPaginate = false;
                         do {
                             news = await getNewsFromEvaluatePage(page, site);
-                            newsList.push.apply(newsList, news);
+                            //newsList.push.apply(newsList, news);
+                            newsList.push(news);
                             stopPaginate = await stopPagination(news, site, page);
+
                         } while (!stopPaginate)
                     }
                     catch (error) {
