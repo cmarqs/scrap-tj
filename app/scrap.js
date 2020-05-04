@@ -53,9 +53,9 @@ async function doScrap(sites) {
             Array(datacollected).some((data) => {
                 //console.log(`Key do site ${site.url} é (${site.limit.key}) ${site.limit.value}`);
                 data.some((d, i) => {
-                    if (d[site.limit])
+                    if (site.limit)
                         doStop = (d[site.limit.key] == site.limit.value);
-                    //console.log(`i[${i}] = ${d[site.limit.key]} (stoped: ${doStop})`);
+                    //console.log(`Limit existe? ${(site.limit)} - i[${i}] = ${d[site.limit.key]} (stoped: ${doStop})`);
                     return doStop;
                 });
                 return doStop;
@@ -65,7 +65,6 @@ async function doScrap(sites) {
                 try {
                     await page.waitForSelector(site.nextbuttonpagination, { timeout: 10000 });
                     await page.click(site.nextbuttonpagination);
-                    doStop = false;
                 }
                 catch (error) {
                     console.log(`Erro ao paginar site ${site.url}: ${error}`);
